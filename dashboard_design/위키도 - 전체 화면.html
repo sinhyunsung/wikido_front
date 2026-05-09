@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>위키도 — 회계사를 위한 위키 시스템 · 전체 화면</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#f0eee9; font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="browser-window.jsx"></script>
+<script type="text/babel" src="screens/shell.jsx"></script>
+<script type="text/babel" src="screens/screens-1.jsx"></script>
+<script type="text/babel" src="screens/screens-2.jsx"></script>
+<script type="text/babel" src="screens/screens-3.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const W = 1280, H = 820;
+
+// Each artboard wraps a screen in a browser window for context.
+const Frame = ({ url, title, children }) => (
+  <ChromeWindow url={url} title={title} width={W} height={H} colorScheme="light">
+    {children}
+  </ChromeWindow>
+);
+
+const App = () => (
+  <DesignCanvas
+    title="위키도 — 회계사를 위한 위키 시스템"
+    subtitle="12개 화면 · 회계법인 업무 전반을 다루는 hi-fi 프로토타입"
+  >
+    <DCSection
+      id="primary"
+      title="① 메인 워크플로우"
+      subtitle="매일 진입하는 화면 — 대시보드 · 검색 · 회사별 영구조서"
+    >
+      <DCArtboard id="home" label="01 · 글로벌 대시보드" width={W} height={H}>
+        <Frame url="wikido.kr/dashboard" title="대시보드 · 위키도">
+          <Screen_Home/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="search" label="02 · 통합 검색 결과" width={W} height={H}>
+        <Frame url='wikido.kr/search?q="차입금 손금불산입"' title="통합 검색 · 위키도">
+          <Screen_Search/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="company" label="03 · 회사별 대시보드 (영구조서)" width={W} height={H}>
+        <Frame url="wikido.kr/companies/daehan-steel" title="(주)대한제강 · 영구조서">
+          <Screen_Company/>
+        </Frame>
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection
+      id="wiki"
+      title="② 위키 · 자료 관리"
+      subtitle="위키 문서 · 업로드 · 라이브러리 · HWP 처리"
+    >
+      <DCArtboard id="wiki" label="04 · 위키 페이지 상세 (출처 명시)" width={W} height={H}>
+        <Frame url="wikido.kr/wiki/tax/under-capitalization" title="과소자본세제 적용 판단 · 위키도">
+          <Screen_Wiki/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="upload" label="05 · 파일 업로드 · 자동 태깅" width={W} height={H}>
+        <Frame url="wikido.kr/upload" title="업로드 · 위키도">
+          <Screen_Upload/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="files" label="06 · 파일 라이브러리 (필터)" width={W} height={H}>
+        <Frame url="wikido.kr/files?tags=2025,세무조정,대한제강" title="파일 라이브러리 · 위키도">
+          <Screen_Files/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="folder" label="07 · 폴더 트리 + HWP 처리" width={W} height={H}>
+        <Frame url="wikido.kr/files/raw/daehan-steel/2025/audit" title="회사 폴더 · 위키도">
+          <Screen_Folder/>
+        </Frame>
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection
+      id="alerts"
+      title="③ 세법 변경 알림 · 영향 분석"
+      subtitle="외부 API 연동 → 변경 감지 → 위키 탐색 → 영향 회사 알림"
+    >
+      <DCArtboard id="alerts" label="08 · 세법 변경 알림 센터" width={W} height={H}>
+        <Frame url="wikido.kr/alerts" title="세법 변경 알림 · 위키도">
+          <Screen_Alerts/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="impact" label="09 · 변경 → 영향 분석 상세" width={W} height={H}>
+        <Frame url="wikido.kr/alerts/2026-12/impact" title="영향 분석 · 위키도">
+          <Screen_Impact/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="checklist" label="10 · 법인세 세무조정 체크리스트" width={W} height={H}>
+        <Frame url="wikido.kr/checklist/corp-tax/daehan-steel/2025" title="세무조정 체크리스트 · 위키도">
+          <Screen_Checklist/>
+        </Frame>
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection
+      id="meta"
+      title="④ 위키 활용 · 관리"
+      subtitle="유사 케이스 추천 · 위키 건강도 관리"
+    >
+      <DCArtboard id="cases" label="11 · 유사 케이스 검색 / 추천" width={W} height={H}>
+        <Frame url="wikido.kr/cases" title="유사 케이스 · 위키도">
+          <Screen_Cases/>
+        </Frame>
+      </DCArtboard>
+      <DCArtboard id="admin" label="12 · 위키 관리 대시보드" width={W} height={H}>
+        <Frame url="wikido.kr/admin/wiki" title="위키 관리 · 위키도">
+          <Screen_Admin/>
+        </Frame>
+      </DCArtboard>
+    </DCSection>
+  </DesignCanvas>
+);
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
