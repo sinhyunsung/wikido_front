@@ -249,6 +249,529 @@ kbd {
 }
 .lex-pill.is-on { background: var(--bg-active); color: var(--text-primary); }
 
+/*
+ * Two-tab strip just below the explorer search — replaces the old `.lex-filters`
+ * pill row. Tabs are mutually exclusive (one always selected); the active tab
+ * gets an underline using --accent and bumps weight + text color.
+ */
+.lex-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.lex-tab {
+  padding: 6px 8px;
+  font-size: 11.5px;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+}
+.lex-tab.is-active {
+  color: var(--text-primary);
+  font-weight: 500;
+  border-bottom-color: var(--accent);
+}
+.lex-tab:hover:not(.is-active) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ─── Viewers (route from EditorPanel by file extension) ─── */
+/*
+ * Each viewer renders into the .ed-body container. The body is a flex
+ * column so viewers can fill available space; viewer roots that need to
+ * scroll set their own overflow.
+ */
+
+.vw-loading,
+.vw-error {
+  padding: 16px 20px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.vw-error {
+  color: var(--c-danger);
+}
+.vw-banner {
+  padding: 6px 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+/* TextViewer (CodeMirror takes its own height — fill the body) */
+.vw-text {
+  height: 100%;
+  outline: none;
+}
+.vw-text > div {
+  /* react-codemirror wraps in a div; let it fill */
+  height: 100%;
+}
+.vw-text .cm-editor {
+  height: 100%;
+  font-size: 13px;
+}
+
+/* ImageViewer — center the image, scroll if larger than the body */
+.vw-image {
+  height: 100%;
+  overflow: auto;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: var(--bg-sunken);
+}
+.vw-image img {
+  max-width: 100%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* DocxViewer — A4-ish reading column on a soft background */
+.vw-docx {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sunken);
+}
+.vw-docx-doc {
+  max-width: 760px;
+  margin: 24px auto;
+  padding: 32px 48px;
+  background: white;
+  border: 1px solid var(--border-subtle);
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  flex: 1;
+  overflow: auto;
+}
+.vw-docx-doc h1 {
+  font-size: 22px;
+  margin: 0 0 14px;
+}
+.vw-docx-doc h2 {
+  font-size: 17px;
+  margin: 22px 0 10px;
+}
+.vw-docx-doc h3 {
+  font-size: 14px;
+  margin: 18px 0 8px;
+}
+.vw-docx-doc p {
+  margin: 8px 0;
+}
+.vw-docx-doc table {
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.vw-docx-doc th,
+.vw-docx-doc td {
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+}
+.vw-docx-doc th {
+  background: var(--bg-sunken);
+}
+
+/* XlsxViewer — sheet tabs on top, scrollable grid below */
+.vw-xlsx {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+.vw-xlsx-sheets {
+  display: flex;
+  gap: 1px;
+  padding: 4px 8px 0;
+  background: var(--bg-chrome);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.vw-xlsx-sheet {
+  padding: 4px 12px;
+  font-size: 11.5px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-subtle);
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.vw-xlsx-sheet.is-active {
+  background: white;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.vw-xlsx-grid {
+  flex: 1;
+  overflow: auto;
+  background: white;
+}
+.vw-xlsx-grid table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.vw-xlsx-grid th {
+  background: var(--bg-sunken);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  font-size: 10.5px;
+  padding: 2px 6px;
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.vw-xlsx-grid tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 0;
+  background: var(--bg-sunken);
+}
+.vw-xlsx-grid td {
+  min-width: 80px;
+  max-width: 280px;
+  padding: 3px 6px;
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vw-xlsx-grid td:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: var(--accent-soft);
+  white-space: normal;
+  overflow: visible;
+}
+
+/* PdfViewer — stacked pages, centered */
+.vw-pdf {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sunken);
+}
+.vw-pdf-pages {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.vw-pdf-pages canvas {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Hand-off (Hwp / Unsupported) */
+.vw-handoff {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px;
+  background: var(--bg-editor);
+}
+.vw-handoff-icon {
+  color: var(--text-quat);
+  margin-bottom: 12px;
+}
+.vw-handoff-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.vw-handoff-ext {
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+.vw-handoff-body {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+  max-width: 380px;
+  margin: 0 0 16px;
+}
+.vw-handoff-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.vw-handoff-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-app);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+.vw-handoff-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.vw-handoff-btn:hover {
+  filter: brightness(0.97);
+}
+.vw-handoff-path {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-quat);
+  word-break: break-all;
+  max-width: 480px;
+}
+
+/*
+ * Right-click context menu (used on tabs; reusable for any other right-click
+ * surface). Positioned absolutely with inline left/top from the call site.
+ * z-index is high so it floats over toolbars/panels.
+ */
+.ctx-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 220px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.ctx-row {
+  display: block;
+  width: 100%;
+  padding: 5px 16px 5px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ctx-row:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+}
+.ctx-row:disabled {
+  color: var(--text-quat);
+  cursor: default;
+}
+.ctx-row.is-danger {
+  color: var(--c-danger);
+}
+.ctx-row.is-danger:hover:not(:disabled) {
+  background: var(--c-danger);
+  color: white;
+}
+.ctx-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* Editor empty state (no tabs open) */
+.ed-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px;
+  background: var(--bg-editor);
+}
+.ed-empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.ed-empty-sub {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+  max-width: 420px;
+}
+
+/* Error boundary fallback (per-panel) — keeps a render error in one panel
+   from blanking the whole window. */
+.errbnd {
+  padding: 16px 20px;
+  background: var(--bg-panel);
+  height: 100%;
+  overflow: auto;
+}
+.errbnd-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-danger);
+  margin-bottom: 8px;
+}
+.errbnd-msg {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-sunken);
+  padding: 8px 10px;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  margin: 0 0 12px;
+}
+.errbnd-retry {
+  padding: 5px 12px;
+  font-size: 11.5px;
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/*
+ * Inline create input — appears as a child row of the folder being created
+ * inside. Mirrors `.tree-row` spacing so it lines up cleanly with siblings.
+ */
+.tree-row-input {
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 0;
+}
+.tree-input {
+  flex: 1;
+  min-width: 0;
+  height: 18px;
+  font: inherit;
+  font-size: 12px;
+  padding: 0 4px;
+  border: 1px solid var(--accent);
+  background: var(--bg-app);
+  color: var(--text-primary);
+  outline: none;
+  border-radius: 2px;
+}
+
+/* Clear button inside the search input */
+.lex-search {
+  position: relative;
+}
+.lex-search-clear {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  display: grid;
+  place-items: center;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.lex-search-clear:hover {
+  background: var(--bg-active);
+  color: var(--text-primary);
+}
+
+/* Search results — flat list with a relative-path crumb under each name */
+.lex-results {
+  padding: 4px 0;
+}
+.lex-results-meta {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 12px 6px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 4px;
+}
+.lex-result {
+  height: auto;
+  padding: 4px 8px 4px 8px;
+  align-items: flex-start;
+  gap: 6px;
+}
+.lex-result-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.lex-result-text .tree-label {
+  display: block;
+}
+.lex-result-path {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Empty state shown in the source tree when no target folder is set. */
+.lex-empty {
+  padding: 24px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.lex-empty p {
+  margin: 0 0 6px;
+}
+.lex-empty .lex-empty-sub {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+.lex-empty button {
+  margin-top: 12px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.lex-empty button:hover {
+  filter: brightness(1.08);
+}
+
 .lex-tree {
   flex: 1;
   overflow: auto;
@@ -431,11 +954,15 @@ kbd {
 }
 
 /* ─── Editor body ─── */
+/*
+ * Container for whichever viewer is active. Each viewer fills 100% and
+ * manages its own scrolling — keep this layer transparent to layout.
+ */
 .ed-body {
-  overflow: auto;
   background: var(--bg-editor);
-  padding: 28px 0 60px;
   position: relative;
+  min-height: 0;
+  overflow: hidden;
 }
 .ed-doc {
   max-width: 760px;
