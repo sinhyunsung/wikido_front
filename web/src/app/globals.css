@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/*
+ * Pretendard is loaded via a <link> tag in src/app/layout.tsx, not here.
+ * Tailwind v4 inlines @import "tailwindcss" in place, which would push any
+ * other @import below the generated rules and trip the "imports must come
+ * first" parser check. The <link> approach sidesteps that entirely.
+ *
+ * Design tokens ported from dashboard_design/screens/shell.jsx (T object).
+ * Registering colors under @theme exposes utilities like bg-ink, text-sub.
+ */
+@theme {
+  /* Surface */
+  --color-bg: #f7f7f5;
+  --color-panel: #ffffff;
+
+  /* Text */
+  --color-ink: #1a1a1a;
+  --color-sub: #6b6b6b;
+  --color-muted: #9a9a9a;
+
+  /* Borders / dividers */
+  --color-line: #e7e5e0;
+  --color-line-soft: #efece6;
+
+  /* Accent (single indigo per design) */
+  --color-accent: #3949ab;
+  --color-accent-soft: #e8eaf6;
+
+  /* Semantic states — picked to mirror shell.jsx exactly */
+  --color-warn: #b8741b;
+  --color-warn-soft: #fdf3e3;
+  --color-good: #2e7d4f;
+  --color-good-soft: #e8f1ec;
+  --color-bad: #b3261e;
+  --color-bad-soft: #fbe9e7;
+
+  /* Typography */
+  --font-sans:
+    Pretendard, "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont,
+    "Noto Sans KR", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* The design uses 12.5–13px body in cards/tables — keep base small. */
+body {
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Pixel-perfect SVG icon defaults — matches `.ico` in shell.jsx */
+.ico {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ico-lg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+/*
+ * Component classes — direct port of dashboard_design/screens/shell.jsx
+ * styles. Living here (not in @layer components) keeps Tailwind v4 happy
+ * with raw `var(--color-…)` references.
+ */
+
+/* Card */
+.ww-card {
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+}
+.ww-card-h {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--color-line-soft);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ww-card-b {
+  padding: 14px 16px;
+}
+
+/* Tag chips */
+.ww-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 5px;
+  font-size: 11.5px;
+  background: var(--color-line-soft);
+  color: var(--color-sub);
+  border: 1px solid transparent;
+}
+.ww-tag-year {
+  background: #fff;
+  border-color: var(--color-line);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.ww-tag-task {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+.ww-tag-co {
+  background: #f1efea;
+  color: var(--color-ink);
+  font-weight: 500;
+}
+.ww-tag-warn {
+  background: var(--color-warn-soft);
+  color: var(--color-warn);
+}
+.ww-tag-good {
+  background: var(--color-good-soft);
+  color: var(--color-good);
+}
+.ww-tag-bad {
+  background: var(--color-bad-soft);
+  color: var(--color-bad);
+}
+
+/* Buttons */
+.ww-btn {
+  height: 32px;
+  padding: 0 13px;
+  border-radius: 7px;
+  border: 1px solid var(--color-line);
+  background: #fff;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.ww-btn:hover {
+  background: var(--color-line-soft);
+}
+.ww-btn-primary {
+  background: var(--color-ink);
+  color: #fff;
+  border-color: var(--color-ink);
+}
+.ww-btn-primary:hover {
+  background: #000;
+}
+.ww-btn-accent {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+.ww-btn-sm {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 11.5px;
+}
+
+/* Table */
+.ww-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.ww-tbl th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--color-muted);
+  font-size: 11px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-line);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ww-tbl td {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--color-line-soft);
+  vertical-align: middle;
+}
+.ww-tbl tr:hover td {
+  background: var(--color-line-soft);
+}
+.ww-tbl tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Misc */
+.ww-divider {
+  height: 1px;
+  background: var(--color-line-soft);
+  margin: 14px 0;
+}
+.ww-meta {
+  font-size: 11.5px;
+  color: var(--color-muted);
+}
+
+/* Placeholder thumbnail (used in upload preview, etc.) */
+.ph {
+  background: repeating-linear-gradient(
+    135deg,
+    #f3f1ec 0 8px,
+    #ebe8e1 8px 16px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  border-radius: 6px;
+}

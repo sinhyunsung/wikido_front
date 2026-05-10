@@ -1,0 +1,53 @@
+appId: com.wikido.desktop
+productName: WikiDo
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!build.log'
+asarUnpack:
+  - resources/**
+# Electron 30+ enforces an embedded ASAR integrity hash by default. Some
+# Windows 10 builds silently exit (no log, exit code 1) when the hash check
+# fails. Disabling the fuse here unblocks local distribution; the proper fix
+# is a code-signed release pipeline that lets the hash embed reliably.
+electronFuses:
+  enableEmbeddedAsarIntegrityValidation: false
+win:
+  executableName: WikiDo
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  artifactName: WikiDo-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+dmg:
+  artifactName: WikiDo-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: wikido.example.com
+  category: Office
+appImage:
+  artifactName: WikiDo-${version}.${ext}
+npmRebuild: false
