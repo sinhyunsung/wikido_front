@@ -335,52 +335,77 @@ kbd {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* DocxViewer — A4-ish reading column on a soft background */
+/*
+ * DocxViewer — backed by docx-preview, which lays the document out as
+ * page-sized white sheets ("docx-page") on a soft canvas. We only style
+ * the wrapping container/banner; let docx-preview own everything inside
+ * the page (it injects its own per-document styles).
+ */
 .vw-docx {
   height: 100%;
   display: flex;
   flex-direction: column;
   background: var(--bg-sunken);
+  overflow: hidden;
 }
-.vw-docx-doc {
-  max-width: 760px;
-  margin: 24px auto;
-  padding: 32px 48px;
-  background: white;
-  border: 1px solid var(--border-subtle);
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: var(--text-primary);
+.vw-docx-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11.5px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+.vw-docx-banner > span {
+  flex: 1;
+}
+.vw-docx-handoff {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-family: inherit;
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  cursor: pointer;
+}
+.vw-docx-handoff:hover {
+  filter: brightness(1.08);
+}
+.vw-docx-pages {
   flex: 1;
   overflow: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
-.vw-docx-doc h1 {
-  font-size: 22px;
-  margin: 0 0 14px;
+/* docx-preview emits one .docx-wrapper containing one or more .docx pages.
+   The pages already have a white background + dimensions set inline from
+   the document's section settings — just add a soft shadow so they look
+   like sheets on the canvas. */
+.vw-docx-pages .docx-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: transparent;
+  padding: 0;
 }
-.vw-docx-doc h2 {
-  font-size: 17px;
-  margin: 22px 0 10px;
-}
-.vw-docx-doc h3 {
-  font-size: 14px;
-  margin: 18px 0 8px;
-}
-.vw-docx-doc p {
-  margin: 8px 0;
-}
-.vw-docx-doc table {
-  border-collapse: collapse;
-  margin: 10px 0;
-  font-size: 12px;
-}
-.vw-docx-doc th,
-.vw-docx-doc td {
-  border: 1px solid var(--border);
-  padding: 4px 8px;
-}
-.vw-docx-doc th {
-  background: var(--bg-sunken);
+.vw-docx-pages .docx {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+  /* Korean-friendly font baseline — applied as a generic fallback. The
+     document's own font selectors (e.g. font-family: "맑은 고딕") win when
+     they resolve to an installed face; otherwise we land on Pretendard /
+     system Korean fonts instead of a Latin-only default. */
+  font-family:
+    Pretendard, '맑은 고딕', 'Malgun Gothic', '함초롬바탕', '함초롬돋움',
+    'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
 }
 
 /* XlsxViewer — sheet tabs on top, scrollable grid below */
@@ -484,6 +509,45 @@ kbd {
 .vw-pdf-pages canvas {
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/*
+ * HwpViewer — banner reuses .vw-docx-banner for visual consistency. The
+ * pages container holds whatever hwp.js paints (it inlines all sizing
+ * and positioning, so we just need a scrollable wrapper).
+ */
+.vw-hwp {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+.vw-hwp-pages {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/*
+ * Sheets injected by HwpViewer (one .rhwp-sheet per page). The SVG itself
+ * carries width/height/coordinates from the original page geometry — we
+ * only need to give each sheet a white background, soft shadow, and a tiny
+ * gap. Don't constrain the inner SVG; let it overflow horizontally if the
+ * doc is wider than the panel (the parent .vw-hwp-pages handles scroll).
+ */
+.rhwp-sheet {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+  /* Reset margins on the inline svg so it sits flush against the sheet edges. */
+  display: inline-block;
+}
+.rhwp-sheet > svg {
+  display: block;
 }
 
 /* Hand-off (Hwp / Unsupported) */
